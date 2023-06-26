@@ -9,4 +9,6 @@ const server = http.createServer(function (req, res) {
     res.end()
 })
 
-server.listen(8080)
+server.listen(8080, function () {
+    console.log("Server running on 8080");
+})
