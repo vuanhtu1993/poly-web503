@@ -6,8 +6,9 @@ const server = http.createServer(function (req, res) {
         "Content-Type": "text/html",
     })
     if (req.url == "/") {
-        const home = fs.readFileSync('./pages/home.html')
-        res.write(home)
+        const html = fs.readFileSync('./pages/home.html')
+        console.log(html.toString());
+        res.write(html)
     }
     if (req.url == "/product") {
         res.write("<h1>Product</h1>")
