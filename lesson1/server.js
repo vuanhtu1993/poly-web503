@@ -1,11 +1,17 @@
 const http = require('http')
+const fs = require('fs')
 
 const server = http.createServer(function (req, res) {
-    console.log(req);
     res.writeHead(200, {
-        "Content-Type": "text/html"
+        "Content-Type": "text/html",
     })
-    res.write("Hello world")
+    if (req.url == "/") {
+        const home = fs.readFileSync('./pages/home.html')
+        res.write(home)
+    }
+    if (req.url == "/product") {
+        res.write("<h1>Product</h1>")
+    }
     res.end()
 })
 
