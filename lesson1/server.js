@@ -1,4 +1,5 @@
 const http = require('http')
+const fs = require('fs') // File system
 
 const data = [
 
@@ -9,7 +10,15 @@ const server = http.createServer(function (req, res) {
     res.writeHead(200, {
         "Content-Type": "text/html"
     })
-    res.write("Xin chao ca lop update")
+    // Server side rendering
+    if (req.url == "/") {
+        const html = fs.readFileSync('./pages/home.html')
+        res.write(html)
+    }
+
+    if (req.url == "/product") {
+        res.write("<h1>Product page</h1>")
+    }
     res.end()
 })
 
