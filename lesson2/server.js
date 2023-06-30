@@ -1,8 +1,16 @@
 const express = require('express')
 const fs = require('fs')
+const bodyParser = require('body-parser')
 
 const app = express()
 const port = 8080
+
+// app.use(express.json())
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 const movies = [
     {
@@ -89,6 +97,33 @@ app.get('/', function (req, res) {
     res.send(html)
     res.end()
 })
+
+app.get("/movies", function (req, res) {
+    res.send(movies)
+    res.end()
+})
+
+app.get("/movies/add", function (req, res) {
+    const html = fs.readFileSync('./pages/add.html', "utf-8")
+    res.send(html)
+    res.end()
+})
+
+// Dynamic routing
+app.get("/movies/:id", function (req, res) {
+    const { id } = req.params
+    const movie = movies.find(m => m.id == id)
+    res.send(movie)
+    res.end()
+})
+
+app.post("/movies", function (req, res) {
+    movies.push({ ...req.body, id: Date.now() })
+    res.send(movies)
+    res.end()
+})
+
+
 
 app.listen(port, function () {
     console.log(`Server is running on ${port}`);
