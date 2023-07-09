@@ -31,4 +31,9 @@ router.post('/image', upload.single('image'), async (req, res) => {
     res.end()
 })
 
+router.post('/images', upload.array('images'), async (req, res) => {
+    console.log(req.files);
+    res.end()
+})
+
 export default router
