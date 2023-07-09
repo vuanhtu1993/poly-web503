@@ -14,7 +14,7 @@ router.use((req, res, next) => {
 const upload = multer({
     // dest: 'public/',
     limits: {
-        fileSize: 4 * 1024 * 1024,
+        fileSize: 1 * 1024 * 1024,
     }
 })
 
