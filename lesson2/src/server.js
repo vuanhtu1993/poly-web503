@@ -10,6 +10,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+// Static file
+app.use(express.static('public'))
+
 // Product router
 app.use('/products', productRouter)
 
