@@ -2,6 +2,7 @@ import express from 'express'
 import fs from 'fs'
 import bodyParser from 'body-parser'
 import movieRouter from './routers/movies'
+import uploadRouter from './routers/upload'
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -18,17 +19,19 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+// Static
+app.use(express.static('src/public'))
+
 // Routing
 app.get('/', function (req, res) {
     // const html = fs.readFileSync(join(__dirname, '/pages/home.html'), 'utf-8')
     // res.send(html)
     res.end(__dirname)
 })
-// Static
-app.use(express.static('src/public'))
 
-// Middleware
+// Router
 app.use("/movies", movieRouter)
+app.use("/upload", uploadRouter)
 
 app.listen(port, function () {
     console.log(`Server is running on ${port}`);
