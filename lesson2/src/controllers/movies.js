@@ -1,4 +1,5 @@
 import fs from 'fs'
+import Joi from 'joi'
 // Model
 const movies = [
     {
@@ -104,8 +105,25 @@ export const addMoviePage = function (req, res) {
     res.end()
 }
 
+const schema = Joi.object({
+    id: Joi.number().required(),
+    title: Joi.string().min(10).required().messages({
+        'string.empty': "{{#label}} dữ liệu bắt buộc",
+        "string.min": "{{#label}} tối thiểu 10 ký tự"
+    }),
+    genres: Joi.array().items(Joi.string()).min(1)
+})
+
 export const createMovie = function (req, res) {
-    movies.push({ ...req.body, id: Date.now() })
-    res.send(movies)
+    const data = { ...req.body, id: Date.now() }
+    const { error } = schema.validate(data)
+    if (!error) {
+        movies.push({ ...req.body, id: Date.now() })
+        res.send(movies)
+    } else {
+        res.status(400).send({
+            message: error.details[0].message
+        })
+    }
     res.end()
 }
