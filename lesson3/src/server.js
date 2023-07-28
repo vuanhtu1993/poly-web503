@@ -6,6 +6,7 @@ import uploadRouter from './routers/upload'
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import mongoose from 'mongoose'
+import userRouter from './routers/user'
 
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = dirname(__filename);
@@ -33,6 +34,7 @@ app.get('/', function (req, res) {
 // Router
 app.use("/movies", movieRouter)
 app.use("/upload", uploadRouter)
+app.use("/auth", userRouter)
 
 mongoose.connect("mongodb://127.0.0.1:27017/web503")
     .then(() => console.log("Connect to DB successfully"))
