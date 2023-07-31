@@ -58,22 +58,24 @@ export const signin = async (req, res) => {
         // Bước 1:
         const { email, password } = req.body
         const user = await User.findOne({ email: email })
-        if (user) {
-            const check = bcrypt.compareSync(password, user.password)
-            if (check) {
-                res.send({
-                    message: "Đăng nhập thành công"
-                })
-            } else {
-                res.status(401).send({
-                    message: "Email hoặc password không hợp lệ"
-                })
-            }
-        } else {
+        // Refactor
+        if (!user) {
             res.status(401).send({
-                message: "Người dùng không tồn tại"
+                message: "Email hoặc password không hợp lệ"
             })
+            res.end()
         }
+        const check = bcrypt.compareSync(password, user.password)
+        if (!check) {
+            res.status(401).send({
+                message: "Email hoặc password không hợp lệ"
+            })
+            res.end()
+        }
+        res.send({
+            message: "Đăng nhập thành công"
+        })
+        res.end()
     } catch (err) {
         res.status(500).send({
             message: "Có lỗi xảy ra"
