@@ -1,6 +1,7 @@
 import User from "../models/user";
 import Joi from 'joi'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 const signupSchema = Joi.object({
     lastname: Joi.string().required().messages({
@@ -52,13 +53,32 @@ export const signup = async (req, res) => {
     res.end()
 }
 
+const signinSchema = Joi.object({
+    email: Joi.string().email().required().messages({
+        "string.empty": "{#label} dữ liệu bắt buộc",
+        "string.email": "{#label} không đúng định dạng"
+    }),
+    password: Joi.string().min(8).required().messages({
+        "string.empty": "{#label} dữ liệu bắt buộc",
+        "string.min": "{#label} mật khẩu không đúng định dạng",
+    })
+})
+
 export const signin = async (req, res) => {
     // req.body = {email, password}
     try {
         // Bước 1:
+        const { error } = signinSchema.validate(req.body, { abortEarly: false })
+        // Refactor
+        if (error) {
+            const message = error.details.map(item => item.message)
+            res.status(400).send({
+                message: message
+            })
+            return;
+        }
         const { email, password } = req.body
         const user = await User.findOne({ email: email })
-        // Refactor
         if (!user) {
             res.status(401).send({
                 message: "Email hoặc password không hợp lệ"
@@ -72,8 +92,10 @@ export const signin = async (req, res) => {
             })
             res.end()
         }
+        const token = jwt.sign({ id: user.id }, "wd18101")
         res.send({
-            message: "Đăng nhập thành công"
+            message: "Đăng nhập thành công",
+            accessToken: token
         })
         res.end()
     } catch (err) {
